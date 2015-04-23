@@ -1,0 +1,36 @@
+package com.roi.intership.monitoring;
+
+import com.roi.intership.config.ConfigProperties;
+
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+
+
+/**
+ * Created by rudolph on 23.04.15.
+ */
+public class Main {
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        System.out.println("Hello world");
+        ConfigProperties config = new ConfigProperties();
+        config.load();
+
+        FileSystem fs = FileSystems.getDefault();
+        Path pathToWatchedInputDir = fs.getPath(config.getProperty("inputDir"))
+                                            .normalize().toAbsolutePath();
+
+        DirectoryWatcher dirWatcher = new DirectoryWatcher(pathToWatchedInputDir);
+
+        Thread dirWatcherThread = new Thread(dirWatcher);
+        dirWatcherThread.start();
+
+        // interrupt the program after 10 seconds to stop it.
+        Thread.sleep(10000);
+        dirWatcherThread.interrupt();
+
+
+    }
+}
