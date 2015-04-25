@@ -1,5 +1,9 @@
 package com.roi.intership.domain;
 
+import com.roi.intership.utils.factory.UtilsFactory;
+import com.roi.intership.utils.parsers.Parser;
+
+import java.io.File;
 import java.nio.file.Path;
 
 /**
@@ -7,10 +11,10 @@ import java.nio.file.Path;
  */
 public class PackageTask implements Runnable {
 
-    Path file;
+    Path filePath;
 
     public PackageTask(Path file){
-        this.file = file;
+        this.filePath = file;
     }
 
 
@@ -27,6 +31,16 @@ public class PackageTask implements Runnable {
      */
     @Override
     public void run() {
+        File file = filePath.toFile();
+        String fileName = file.getName();
+        String fileType = getFileExtension(fileName);
+        Parser parser = UtilsFactory.createParser(fileType);
+        Trade trade = parser.parse(file);
+        //
+    }
 
+    private String getFileExtension(String fileName){
+        String[] parts = fileName.split(".",2);
+        return parts[1];
     }
 }
