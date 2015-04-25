@@ -14,6 +14,22 @@ public class ConfigProperties {
 
     private Properties properties = new Properties();
 
+    private static ConfigProperties instance;
+
+    private ConfigProperties(){}
+
+    public synchronized static ConfigProperties getInstance(){
+        if(instance == null){
+            instance = new ConfigProperties();
+            try {
+                instance.load();
+            } catch (IOException e) {
+                return null;
+            }
+        }
+        return instance;
+    }
+
     public void load() throws IOException {
 
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);

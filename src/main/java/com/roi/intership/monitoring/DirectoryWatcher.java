@@ -1,5 +1,7 @@
 package com.roi.intership.monitoring;
 
+import com.roi.intership.processing.FileProcessor;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.WatchEvent.Kind;
@@ -22,6 +24,8 @@ public class DirectoryWatcher implements Runnable {
             System.out.println("File created");
             Path file = (Path) event.context();
             System.out.println(file.getFileName());
+            FileProcessor processor = FileProcessor.getInstance();
+            processor.handle(file);
         }
 
 

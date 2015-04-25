@@ -15,8 +15,11 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println("Hello world");
-        ConfigProperties config = new ConfigProperties();
-        config.load();
+
+        ConfigProperties config = ConfigProperties.getInstance();
+        if(config == null){
+            throw new IOException();
+        }
 
         FileSystem fs = FileSystems.getDefault();
         Path pathToWatchedInputDir = fs.getPath(config.getProperty("inputDir"))

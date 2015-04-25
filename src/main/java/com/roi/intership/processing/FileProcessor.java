@@ -1,5 +1,6 @@
 package com.roi.intership.processing;
 
+import com.roi.intership.calc.DividendsCalculator;
 import com.roi.intership.domain.PackageTask;
 import com.roi.intership.utils.validator.Validator;
 
@@ -32,7 +33,8 @@ public class FileProcessor {
 
         String fileName = file.toFile().getName();
         if( isValidFileName(fileName) ){
-            pool.submit(new PackageTask(file));
+            DividendsCalculator calculator = new DividendsCalculator();
+            pool.submit(new PackageTask(file,calculator));
         }
 
     }
