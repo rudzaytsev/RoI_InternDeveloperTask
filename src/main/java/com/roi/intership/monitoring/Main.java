@@ -22,13 +22,18 @@ public class Main {
         Path pathToWatchedInputDir = fs.getPath(config.getProperty("inputDir"))
                                             .normalize().toAbsolutePath();
 
+
         DirectoryWatcher dirWatcher = new DirectoryWatcher(pathToWatchedInputDir);
 
         Thread dirWatcherThread = new Thread(dirWatcher);
         dirWatcherThread.start();
 
+        /* Case when inputDir is not empty before start of this program */
+        //FileProcessor fileProcessor = FileProcessor.getInstance();
+
+
         // interrupt the program after 10 seconds to stop it.
-        Thread.sleep(10000);
+        Thread.sleep(15000);
         dirWatcherThread.interrupt();
 
 

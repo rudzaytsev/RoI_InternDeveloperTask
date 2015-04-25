@@ -20,6 +20,8 @@ public class DirectoryWatcher implements Runnable {
         Kind<?> kind = event.kind();
         if(kind.equals(StandardWatchEventKinds.ENTRY_CREATE)){
             System.out.println("File created");
+            Path file = (Path) event.context();
+            System.out.println(file.getFileName());
         }
 
 
