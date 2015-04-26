@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Scanner;
 
 
 /**
@@ -36,7 +37,9 @@ public class Main {
 
 
         // interrupt the program after 10 seconds to stop it.
-        Thread.sleep(15000);
+        //Thread.sleep(15000);
+        Scanner scan = new Scanner(System.in);
+        scan.next();
         dirWatcherThread.interrupt();
 
 

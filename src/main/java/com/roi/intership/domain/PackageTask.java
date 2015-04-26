@@ -8,6 +8,7 @@ import com.roi.intership.utils.writers.Writer;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.StringTokenizer;
 
 /**
  * Created by rudolph on 25.04.15.
@@ -37,11 +38,15 @@ public class PackageTask implements Runnable {
      */
     @Override
     public void run() {
+        System.out.println("--- RUN ---");
         File file = filePath.toFile();
         String fileName = file.getName();
+        System.out.println(fileName);
         String fileType = getFileExtension(fileName);
+        //System.out.println(fileType);
         Parser parser = UtilsFactory.createParser(fileType);
-        Trade trade = parser.parse(file);
+        Trade trade = parser.parse(filePath.toAbsolutePath().toFile());
+        System.out.println(trade);
 
         Dividends dividends = calculator.calcDividends(trade);
         Writer writer = UtilsFactory.createWriter(fileType);
@@ -49,12 +54,20 @@ public class PackageTask implements Runnable {
         Claim claim = null;
         if(calculator.checkForClaim(trade,dividends)){
             claim = calculator.makeClaim(trade,dividends);
+            writer.write(claim,makeClaimFilePath(fileName));
         }
     }
 
     private String getFileExtension(String fileName){
-        String[] parts = fileName.split(".",2);
-        return parts[1];
+        StringTokenizer tokenizer = new StringTokenizer(fileName,".");
+        String ext = null;
+        while(tokenizer.hasMoreTokens()){
+            ext = tokenizer.nextToken();
+        }
+
+        System.out.println("Extension = " + ext);
+
+        return ext;
     }
 
     public CalculatorStrategy getCalculator() {
@@ -68,6 +81,16 @@ public class PackageTask implements Runnable {
     private String makeDividendsFilePath(String fileName){
         StringBuilder builder = new StringBuilder();
         builder.append("DIV_");
+        builder.append(fileName);
+        String name = builder.toString();
+        ConfigProperties config = ConfigProperties.getInstance();
+        String outputDir = config.getProperty("outputDir");
+        return outputDir + File.separator + name;
+    }
+
+    private String makeClaimFilePath(String fileName){
+        StringBuilder builder = new StringBuilder();
+        builder.append("CAMIMS_");
         builder.append(fileName);
         String name = builder.toString();
         ConfigProperties config = ConfigProperties.getInstance();

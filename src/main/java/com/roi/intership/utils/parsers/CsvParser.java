@@ -1,14 +1,12 @@
 package com.roi.intership.utils.parsers;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.csvreader.CsvReader;
 import com.roi.intership.domain.Trade;
 import com.roi.intership.utils.validator.Validator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Created by rudolph on 25.04.15.
@@ -35,13 +33,69 @@ public class CsvParser extends AbstractParser {
             return null;
         }
 
+        try {
 
+            CsvReader values = new CsvReader(file.getCanonicalPath());
+
+            values.readHeaders();
+
+            while (values.readRecord())
+            {
+                String tradeId = values.get("Trade_id");
+                trade = new Trade(tradeId);
+
+                trade.setSellerAccount(values.get("Seller_acct"));
+                trade.setBuyerAccount(values.get("Buyer_acct"));
+                trade.setTradeDate(values.get("TD"));
+                trade.setSettlementDate(values.get("SD"));
+                int ammount = 0;
+                try {
+                    ammount = Integer.parseInt(values.get("Amount"));
+                    if(ammount < 0){
+                        return null;
+                    }
+                }
+                catch(NumberFormatException e){
+                    System.out.println("NumberFormatException");
+                    return null;
+                }
+                trade.setAmountOfShares(ammount);
+                trade.setShare(share);
+
+                /*
+                String productName = products.get("ProductName");
+                String supplierID = products.get("SupplierID");
+                String categoryID = products.get("CategoryID");
+                String quantityPerUnit = products.get("QuantityPerUnit");
+                String unitPrice = products.get("UnitPrice");
+                String unitsInStock = products.get("UnitsInStock");
+                String unitsOnOrder = products.get("UnitsOnOrder");
+                String reorderLevel = products.get("ReorderLevel");
+                String discontinued = products.get("Discontinued");
+                */
+                // perform program logic here
+                System.out.println(trade);
+            }
+
+            values.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        /*
         CSVReader reader = null;
         try {
-            reader = new CSVReader(new FileReader(file), ',' , '"' , 1);
+            reader = new CSVReader(new InputStreamReader(new FileInputStream(file),"ASCII"), ',' , '"' , 1);
         } catch (FileNotFoundException e) {
             System.out.println("Error. Csv file not found: " + e.getMessage());
             return null;
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
 
         //Read CSV line by line and use the string array as you want
@@ -61,7 +115,11 @@ public class CsvParser extends AbstractParser {
             return null;
         }
         return null;
+        */
+        return trade;
     }
+
+
 
     private Trade parse(String[] values){
         
